@@ -1,3 +1,1 @@
-# mascencerro.github.io
-Just some work on a personal github page:
-https://mascencerro.github.io
+# https://0x194.net
