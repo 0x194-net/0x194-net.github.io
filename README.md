@@ -1,1 +1,1 @@
-# https://0x194.net
+# 0x194.net hugo
