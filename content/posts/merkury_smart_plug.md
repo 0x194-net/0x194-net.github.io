@@ -1,14 +1,14 @@
 ---
 title: "IoT Hacking: Violating A Smart Plug"
 date: 2022-06-26T21:30:03-05:00
-draft: true
+draft: false
 tags: ["hack", "iot", "firmware", "devices"]
 ---
 
 ### Writing custom firmware for inexpensive smart devices
 
 ---
-
+ TESTING GH ACTIONS
 BLAHBLAH BLAH INTRO BLAH BLAHBLAHBLAH BLAH INTRO BLAH BLAH
 BLAHBLAH BLAH INTRO BLAH BLAHBLAHBLAH BLAH INTRO BLAH BLAH
 BLAHBLAH BLAH INTRO BLAH BLAHBLAHBLAH BLAH INTRO BLAH BLAH
