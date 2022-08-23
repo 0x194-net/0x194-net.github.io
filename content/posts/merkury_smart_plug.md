@@ -1,7 +1,7 @@
 ---
 title: "IoT Hacking: Violating A Smart Plug"
 date: 2022-06-26T21:30:03-05:00
-draft: false
+draft: true
 tags: ["hack", "iot", "firmware", "devices"]
 ---
 
