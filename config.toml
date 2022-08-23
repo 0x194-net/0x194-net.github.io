@@ -1,9 +1,9 @@
-baseurl = "/"
+baseurl = "https://0x194.net"
 languageCode = "en-us"
 theme = "hello-friend"
 paginate = 5
 
-publishDir = "mascencerro.github.io"
+# publishDir = "mascencerro.github.io"
 
 # Google Analytics
 # UNCOMMENT FOR NON-DEV
