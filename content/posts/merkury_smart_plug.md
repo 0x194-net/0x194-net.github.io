@@ -140,7 +140,7 @@ Modified Case Installed|Ugly But Works|
 Now I needed a way to connect this device to our computer. What I found to use were 2x [FT232RL FTDI Usb to TTL Serial Adapter](http://www.hiletgo.com/ProductDetail/2152064.html)
 that I ordered from Amazon for around $6/each.  
 
-For this use since I only needed the VCC/GND and RX/TX from each, I was able to use the pins without doing any more soldering. We will need one FTDI adapter
+For this use since I only needed the VCC/GND and RX/TX from each, I was able to use the pins without doing any more soldering. I needed one FTDI adapter
 for the logging console, and the other to do the programming. The CEN lead will be left open for now as it touched to GND to reset the chip.
 
 |FT232RL Front|FT232RL Back|
@@ -223,8 +223,8 @@ source venv/Scripts/activate
 {{< imagelink src=/img/merkury_smart_plug/python_venv_create.png link=/img/merkury_smart_plug/python_venv_create.png position=center caption="Setup python virtual environment" >}}  
 &nbsp;  
 
-The `uartprogram` script requires a few two modules that we don't yet have setup in our virtual environment, so we're likely to get errors if we attempt to run it as is.
-We can utilize the Python pip command to install the missing modules:  
+The `uartprogram` script requires a few two modules that I don't yet have setup in our virtual environment, so I received a few errors when attempting to run it.
+The Python `pip` command is used to install the missing modules:  
 
 ```shell
 pip install pyserial
@@ -232,7 +232,7 @@ pip install tqdm
 ```  
 &nbsp;  
 
-I was then able to run `uartprogram --help` to get the options.
+I was then able to run `python ./uartprogram --help` to get the options.
 {{< imagelink src=/img/merkury_smart_plug/uartprogram_usage.png link=/img/merkury_smart_plug/uartprogram_usage.png position=center caption="`uartprogram` program usage" >}}
 
 &nbsp;  
@@ -243,7 +243,8 @@ Before I attempt to write any firmware to the chipset, I first needed to test if
 For the chipset to recognize that it is in program mode, according to the [Tuya WB2S datasheet](https://developer.tuya.com/en/docs/iot/wb2s-module-datasheet?id=K9ghecl7kc479)
 I need to bring the CEN to ground for a moment, resetting the device. This is the reason I wired the reset switch to the CEN, but I could get the same result by touching the
 contact end to ground. I started the application to read with the following command, and as soon as it said `Read Getting Bus...`
-I briefly grounded the CEN with the reset button and released.  
+I briefly grounded the CEN with the reset button and released. It took a few repeated tries to get the timing correct, just pressing and releasing the button every second or so,
+but it eventually took and started reading.
 
 ```shell
 python ./uartprogram -d COM6 -b 115200 -r ./firmware.bin
@@ -290,3 +291,40 @@ Everything was now prepared to write my test application and flash the device.
 &nbsp;  
 
 ### Final Boss Stage - Flashing  
+
+At this point I was ready to write a simple application to put all of this work to use. I created a New Project within PlatformIO specifying the `WB2S` board and
+using the `Arduino` framework.
+
+|PlatformIO Menu|Creating a New Project|
+|:---:|:---:|
+|{{< imagelink src=/img/merkury_smart_plug/pio_new.png position=center >}}|{{< imagelink src=/img/merkury_smart_plug/pio_new_details.png position=center >}}|
+
+&nbsp;  
+This created a basic Arduino project with setup() and loop() functions. The printf() function is available, so I wrote a simple 'Hello world' output to show
+the firmware is loading properly after flashing.
+
+{{< imagelink src=/img/merkury_smart_plug/pio_main.png position=center >}}  
+
+&nbsp;  
+I then ran the build from the PlatformIO Build button in the bottom left of the IDE to compile the project into the firmware image.
+{{< imagelink src=/img/merkury_smart_plug/pio_build_button.png position=center >}}
+{{< imagelink src=/img/merkury_smart_plug/pio_build.png position=center >}}
+
+In order to upload the image I needed to modify the `platformi.ini` to specify which COM port I intended to use for upload. Without specifying this, the
+program that flashes the chip LibreTuya and PlatformIO will try to connect to COM3 which is currently connected as the logging adapter. A return to
+Device Manager tells me that the programming adapter is found on COM6.
+{{< imagelink src=/img/merkury_smart_plug/windows_prog_com.png position=center >}}
+
+&nbsp;  
+After adding `upload_port = COM6` to the platformio.ini I was ready to try uploading 'Hello world'.
+{{< imagelink src=/img/merkury_smart_plug/pio_ini.png position=center >}}
+
+&nbsp;  
+Using the PlatformIO Upload button this time, the project to recompile because of my addition to the `platformio.ini` and started to upload. It is during this
+time that I start slowly and repeatedly pressing the reset button until the flash starts.  
+{{< imagelink src=/img/merkury_smart_plug/pio_upload_button.png position=center >}}
+{{< imagelink src=/img/merkury_smart_plug/pio_flash.png position=center >}}
+
+&nbsp;
+The PuTTY connection shows me the flash was successful.
+{{< imagelink src=/img/merkury_smart_plug/hello_world.png position=center >}}
