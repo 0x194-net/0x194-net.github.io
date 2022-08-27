@@ -109,7 +109,7 @@ a forum post at [Elektroda](https://www.elektroda.com):
 In the discussion the author describes exactly how he was able to connect the device, read the log output, and flash the device with custom firmware.
 This sounds to me to be pretty spot-on for what we're needing.  
 
-Tuya has also made the SDK for the chipset open source availble [here](https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t.git).  
+Tuya has also made the SDK for the chipset open source availble [here](https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t).  
 
 While searching for more information on the SDK and BK7231T chipset, I found:  
 - [Light jailbreaking: exploiting Tuya IoT devices for fun and profit](https://rb9.nl/posts/2022-03-29-light-jailbreaking-exploiting-tuya-iot-devices/)  
@@ -202,7 +202,7 @@ This is the part where it really starts to get interesting. Once I had establish
 While it is probably possible to do this section with Powershell, I have [Git Bash](https://git-scm.com/) which makes using a text console from Windows much more pleasant.
 
 There is an 'official' flashing application from Beken for doing this part, I found it to be completely useless as all it did was fail to connect. Instead I chose to use
-[this fork of hid_download_py](https://github.com/OpenBekenIOT/hid_download_py.git) for the flash reading/writing. This will require an installation of [Python 3](https://www.python.org/) to run.
+[this fork of hid_download_py](https://github.com/OpenBekenIOT/hid_download_py) for the flash reading/writing. This will require an installation of [Python 3](https://www.python.org/) to run.
 
 ```shell
 git clone https://github.com/OpenBekenIOT/hid_download_py.git
@@ -258,7 +258,35 @@ in very handy to rescue a bricked device.
 
 I now have logging and flash reading! Now on to the final goal, writing.
 
+---
+
+&nbsp;  
+### Preparing a Development Environment
+
+    Prerequisites:
+    - Microsoft Visual Studio Code
+    - PlatformIO extension for VSCode
+
+&nbsp;  
+Before I'm able to flash new firmware, I have to have firmware to flash. I have a few options available depending on my intentions for the device.
+- [Tuya SDK](https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t) for this device is available.
+- [OpenBeken](https://github.com/openshwprojects/OpenBK7231T), the Tasmota/Esphome replacement based off
+of the Tuya SDK allowing for untethering the device from the Tuya Cloud.
+- [LibreTuya](https://github.com/kuba2k2/libretuya) which creates an Arduino-compatible build environment for Tuya modules using [PlatformIO](https://platformio.org/).
+
+Because I intend to use this device as an Arduino-like device and not to integrate into home automation, I chose to experiment further with VSCode/PlatformIO/LibreTuya.
+
+&nbsp;  
+Within VSCode, I installed [PlatformIO](https://platformio.org/), opened a new terminal within VSCode, and installed the LibreTuya platform into PlatformIO.
+```shell
+platformio platform install https://github.com/kuba2k2/libretuya
+```
+
+&nbsp;  
+Everything was now prepared to write my test application and flash the device.
+
+---
+
 &nbsp;  
 
 ### Final Boss Stage - Flashing  
-
