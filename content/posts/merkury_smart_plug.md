@@ -320,7 +320,7 @@ After adding `upload_port = COM6` to the platformio.ini I was ready to try uploa
 {{< imagelink src=/img/merkury_smart_plug/pio_ini.png position=center >}}
 
 &nbsp;  
-Using the PlatformIO Upload button this time, the project to recompile because of my addition to the `platformio.ini` and started to upload. It is during this
+Using the PlatformIO Upload button this time, the project to recompiles because of my addition to the `platformio.ini` and started to upload. It is during this
 time that I start slowly and repeatedly pressing the reset button until the flash starts.  
 {{< imagelink src=/img/merkury_smart_plug/pio_upload_button.png position=center >}}
 {{< imagelink src=/img/merkury_smart_plug/pio_flash.png position=center >}}
