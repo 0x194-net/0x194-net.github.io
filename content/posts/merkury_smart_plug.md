@@ -1,22 +1,22 @@
 ---
 title: "Voiding the Warranty - Merkury Smart Plug"
-date: 2022-08-23T21:30:03-05:00
-draft: true
+date: 2022-10-21T12:30:03-05:00
+draft: false
 toc: true
 tags: ["tryharder", "iot", "firmware", "devices"]
 ---
 
-### The Cause - Why do this?
+## The Cause - Why do this?
 
 Studying infosec and IoT device security has given me a desire to create my own gadgets and practice some of what I've learned. What better way than destroying
 some cheap off-the-shelf devices found at a local store and share my process with others?  
 
-"But,", some may ask, "why would I do that when there are options such as Arduino, ESP32, and ESP8266 that are available?"
+Some may ask, "why would I do that when there are options such as Arduino, ESP32, and ESP8266 that are available?"
 
 - **Availability**  
     Since I am located out in a rather rural area, if I want an Arduino board or similar, I have to order it online. After I pay
-    for the device and additional shipping, I patiently wait for my device to arrive in the hopes that the order is correct and device is functional.
-    By sourcing inexpensive devices locally, I am able to cut cost, avoid shipping, and skip waiting and crossing my fingers. Also, these devices are usually sold
+    for the device and additional shipping, I patiently wait for my device to arrive in the hopes that the order is correct, and the device is functional.
+    By sourcing inexpensive devices locally, I can cut cost, avoid shipping, and skip waiting and crossing my fingers. Also, these devices are usually sold
     in packs of 2-4 at a cost comparable or cheaper than the cost of a single Arduino without shipping added.
 
 - **Peripherals**  
@@ -28,17 +28,17 @@ some cheap off-the-shelf devices found at a local store and share my process wit
 - **Versatility**  
     Smart devices have an operating system of some form such as Linux or an RTOS. This means they have a program that instructs the device what to do, 
     and that program is usually modifiable if it can be accessed and written to. If I can figure out how to flash my own firmware to these devices, 
-    I would then have the ability to write my own code, utilize additional libraries, and perform functions with the device not intended by the end consumer.
+    I can write my own code, utilize additional libraries, and perform functions with the device not intended by the manufacturer.
 
 I don't see a reason *not* to at least give it a try.
 
-So, without further adieu, let us break something.
+So, without further ado, let's break something.
 
 ---
 
 &nbsp;  
 
-### The Victim - Choosing the device
+## The Victim - Choosing the device
 
 The first device I chose to violate is a Merkury Smart Plug. These are currently sold near me for around $13 a pair (yay for spare).  
 {{< imagelink src=/img/merkury_smart_plug/box.jpg link=/img/merkury_smart_plug/box.jpg position=center caption="https://mygeeni.com/products/merkury-innovations-smart-plug-requires-2-4ghz-wifi" >}}
@@ -50,7 +50,7 @@ The first device I chose to violate is a Merkury Smart Plug. These are currently
 
 If we search for the FCCID 2AJ3WEBECZW03 from the back of the device at 
 [fcc.gov](https://apps.fcc.gov/oetcf/eas/reports/ViewExhibitReport.cfm?mode=Exhibits&RequestTimeout=500&calledFromFrame=N&application_id=yl2hr7pvnYtSU5TBbzIdXQ%3D%3D&fcc_id=2AJ3WEBECZW03)
-we will find disassembled photos showing that the cover is held on by glue around the edge. We can also see the part number for the chipset, but its hard to make out for certain.  
+we will find disassembled photos showing that the cover is held on by glue around the edge. We can also see the part number for the chipset, but it is hard to make out for certain.  
 
 Using two small screwdrivers I was able to pry around the edge until the cover finally popped off. It doesn't look pretty and new, but function is more important than form here.
 
@@ -58,10 +58,10 @@ Using two small screwdrivers I was able to pry around the edge until the cover f
 |:---:|
 |{{< imagelink src=/img/merkury_smart_plug/plug_cut1.jpg link=/img/merkury_smart_plug/plug_cut1.jpg >}}|
 
-We can see on the back of this chipset a few interesting labeled contacts such as two pair of `RX/TX`, a `VBAT`, as well as `GND`. These are what we
+We can see on the back of this chipset a few interesting, labeled contacts such as two pair of `RX/TX`, a `VBAT`, as well as `GND`. These are what we
 will be utilizing for communication and flashing of the controller.  
 
-On the front of the chipset we see it is labeld as `Model: WB2S`. A quick Google search will lead us to [the WB2S datasheet provided by Tuya](https://developer.tuya.com/en/docs/iot/wb2s-module-datasheet?id=K9ghecl7kc479).
+On the front of the chipset we see it is labeled as `Model: WB2S`. A quick Google search will lead us to [the WB2S datasheet provided by Tuya](https://developer.tuya.com/en/docs/iot/wb2s-module-datasheet?id=K9ghecl7kc479).
 
 {{< imagelink src=/img/merkury_smart_plug/chipset_front.jpg link=/img/merkury_smart_plug/chipset_front.jpg position=center caption="Front of controller with Model: W2BS" >}}
 
@@ -91,7 +91,7 @@ Bluetooth LE
 
 So, it says we have a 120 MHz ARM Cortex-M4 mpu, 256KB RAM, 2MB flash, 2.4Ghz Beken BK7231T wireless chipset, Bluetooth LE, GPIO, UART, and ADC. 
 The WB2S chipset also happens to run the open source Real-Time Operating System [FreeRTOS](https://www.freertos.org/).  
-I don't think thats a bad deal for about $6.50 total.  
+Not a bad deal for about $6.50 total.  
 
 Even though the connections are thankfully labeled on the chip, the datasheet also includes a diagram as well. Thanks Tuya!  
 
@@ -103,7 +103,7 @@ Even though the connections are thankfully labeled on the chip, the datasheet al
 
 &nbsp;  
 
-### Making Connections - Lets get physical
+## Making Connections - Lets get physical
 
 Since this is my first time working with the actual firmware of a device, I took to Google again. Surely someone else
 has tried to work with these devices, right? After reading through a handful reddit and forum posts asking about the Tuya WB2S, I stumbled onto
@@ -114,19 +114,19 @@ a forum post at [Elektroda](https://www.elektroda.com):
 In the discussion the author describes exactly how he was able to connect the device, read the log output, and flash the device with custom firmware.
 This sounds to me to be pretty spot-on for what we're needing.  
 
-Tuya has also made the SDK for the chipset open source availble [here](https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t).  
+Tuya has also made the SDK for the chipset open source available [here](https://github.com/tuya/tuya-iotos-embeded-sdk-wifi-ble-bk7231t).  
 
 While searching for more information on the SDK and BK7231T chipset, I found:  
 - [Light jailbreaking: exploiting Tuya IoT devices for fun and profit](https://rb9.nl/posts/2022-03-29-light-jailbreaking-exploiting-tuya-iot-devices/)  
 
-In the write-up, the researchers describes how they went about finding a vulerability with the Tuya SDK allowing them to jailbreak the device and install
+In the write-up, the researchers describe how they went about finding a vulnerability with the Tuya SDK allowing them to jailbreak the device and install
 custom firmware with OTA update. I was later able to find [the video](https://youtu.be/uZXSMUp2bgU) from their presentation at [MCH2022](https://mch2022.org/)
 regarding the vulnerability and after their disclosure to Tuya which I think is worth the watch.
 
 This thing is going to be fun!
 
 Now, getting back to business, I needed to be able to handle the plug without risk of being shocked by the AC portion of the device while also having access for wiring,
-so I removed a section of the case for a window. After modifying the case to accomodate wiring, I attached leads to the following connections on the chip: 
+so I removed a section of the case for a window. After modifying the case to accommodate wiring, I attached leads to the following connections on the chip: 
 
 - VBAT 3.3v power  
 - GND ground  
@@ -136,13 +136,13 @@ so I removed a section of the case for a window. After modifying the case to acc
 
 The contact pads are very delicate, so it is recommended to make sure the wiring is extra stable. In the case that one of those pads is pulled even slightly it can
 separate from the PCB and it may take a bit of finesse to make a new lead on the board. I experienced that with another chipset from a bulb, so I decided to reinforce
-the connection with hot-glue for a little extra insurance.
+the connection with hot glue for a little extra insurance.
 
 Modified Case Installed|Ugly But Works|
 |:---:|:---:|
 |{{< imagelink src=/img/merkury_smart_plug/plug_cut2.jpg link=/img/merkury_smart_plug/plug_cut2.jpg >}}|{{< imagelink src=/img/merkury_smart_plug/ugly_but_works.jpg link=/img/merkury_smart_plug/ugly_but_works.jpg >}}
 
-Now I needed a way to connect this device to my computer. What I settled on using were 2x[FT232RL FTDI Usb to TTL Serial Adapter](http://www.hiletgo.com/ProductDetail/2152064.html)
+I needed a way to connect this device to my computer. What I settled on using were 2x[FT232RL FTDI Usb to TTL Serial Adapter](http://www.hiletgo.com/ProductDetail/2152064.html)
 that I ordered from Amazon for around $6/each.  
 
 Since I only the VCC/GND and RX/TX were needed from each, I was able to use the pins without doing any more soldering. I needed one FTDI adapter
@@ -169,9 +169,9 @@ I scavenged a reset switch from an old Dell desktop case to make life easier wit
 
 &nbsp;  
 
-### Device Log Setup - Listening in
+## Device Log Setup - Listening in
 
-Now it is time for me to test my connections. First, I connected the FTDI that is connected to 2RX/2TX to the computer. For each of my serial adapters, I used a cable to connect
+Time to test the connections. First, I connected the FTDI that is connected to 2RX/2TX to the computer. For each of the serial adapters, a USB cable was used to connect
 instead of plugging directly into the USB port so everything wasn't crammed into one place. Once connected, I checked to see what serial port it had been assigned.  
 
 |For Windows10 open Device Manager with either right-click on the `Start` button or press the Windows key and `x`, then select `Device Manager` from the menu|Find the *Ports (COM & LPT)* section|
@@ -198,17 +198,17 @@ with successful results. The log starts with the chip initializing and then goes
 
 &nbsp;  
 
-### Firmware Dump Setup - A look inside
+## Firmware Dump Setup - A look inside
 
     Prerequisites:
     - Git Bash (actually optional, but what I used for my terminal)
     - Python 3
 
-This is the part where it really starts to get interesting. Once I had established my logging capabilities, it was then time to take the programming uart (1RX/1TX) adapter for a spin.  
+This is the part where it really starts to get interesting. Once logging was established, it was time to take the programming uart (1RX/1TX) adapter for a spin.  
 
 While it is probably possible to do this section with Powershell, I have [Git Bash](https://git-scm.com/) which makes using a text console from Windows much more pleasant.
 
-There is a Beken 'official' flashing application that was located for doing this part, but I found it to be completely useless as all it did was fail to connect. Instead I chose to use
+There is a Beken 'official' flashing application that was located for doing this part, but I found it to be completely useless because all it did was fail to connect. Instead I chose to use
 [this fork of hid_download_py](https://github.com/OpenBekenIOT/hid_download_py) for the flash reading/writing. This will require an installation of [Python 3](https://www.python.org/) to run.
 
 ```shell
@@ -243,7 +243,7 @@ I was then able to run `python ./uartprogram --help` to get the options.
 
 &nbsp;  
 
-Before I attempt to write any firmware to the chipset, I first needed to test if I could *read* from the chipset properly. I see from the usage that I need to use the
+Before attempting to write any firmware to the chipset, I needed to test if I could *read* from the chipset properly. I see from the usage that I need to use the
 `-d`, `-b`, and `-r` options to specify the *device*, *speed*, and *output file*.
 
 For the device to be in program mode I need to bring the CEN to ground for a moment while `uartprogram` is `Getting Bus...`, resetting the device. This is the reason I wired the reset 
@@ -269,7 +269,7 @@ I now have logging and flash reading! Now on to the final goal, writing.
 ---
 
 &nbsp;  
-### Preparing a Development Environment
+## Preparing a Development Environment
 
     Prerequisites:
     - Microsoft Visual Studio Code
@@ -299,7 +299,7 @@ Everything was now prepared to write my test application and flash the device.
 
 &nbsp;  
 
-### The Final Boss - Flashing  
+## The Final Boss - Flashing  
 
 At this point I was ready to write a simple application to put all of this work to use. I created a New Project within PlatformIO specifying the `WB2S` board and
 using the `Arduino` framework.
@@ -345,19 +345,3 @@ the flash likely failed and will need to be retried. Once the flash is complete,
 &nbsp;  
 The PuTTY connection shows me the flash was successful and the new application runs with `Hello World` being printed.
 {{< imagelink src=/img/merkury_smart_plug/hello_world.png position=center >}}
-
-&nbsp;  
-### What This Means  
-This could mean nothing at all for most people, but for folks like myself it could mean the availability for versatile microcontrollers on the cheap.
-Not only would this mean relatively easily accessible hardware for hobbyists, but in the small industrial and agricultural fields as well.  
-
-Sure, if someone were building a complex machine that needed to be 100% plug-and-play **and** reliable, they would probably opt for the real deal instead 
-of scavenging parts from lightbulbs and powerstrips. However, there are quite a few farmers out there, for example, that are more tech-savvy than the 
-traditional 'dust and mud' than they get credit for. Some of those farmers might want to build a system for automated tasks such as to monitoring 
-or operating gates, but want to build a prototype before they start spending a lot of money on parts. With the ability to use these microcontrollers with 
-their GPIO, I2C, ADC, and wireless capabilities, they could build a mock-up in the time they waited on their Arduino boards to arrive, and have inexpensive spares 
-if something happens to the Arduino.  
-
-There is **a lot** more technical detail about the WB2S (and similar chipsets), as well as the Tuya/Beken software and firmware that I did not include. Such as the way 
-the firmware is written to the chipset, memory management, the firmware storage blocks, etc. Much of this information can be found through the links included, 
-and more is yet to be discovered.
