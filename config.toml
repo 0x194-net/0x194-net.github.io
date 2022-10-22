@@ -5,10 +5,6 @@ paginate = 5
 
 # publishDir = "mascencerro.github.io"
 
-# Google Analytics
-# UNCOMMENT FOR NON-DEV
-GoogleAnalyticsID = "G-JVGGCM9QQM"
-
 [params]
   # Google Analytics
   GoogleAnalyticsID = "G-JVGGCM9QQM"
