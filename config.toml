@@ -10,6 +10,9 @@ paginate = 5
 GoogleAnalyticsID = "G-JVGGCM9QQM"
 
 [params]
+  # Google Analytics
+  GoogleAnalyticsID = "G-JVGGCM9QQM"
+  
   # dir name of your blog content (default is `content/posts`).
   # the list of set content will show up on your index page (baseurl).
   contentTypeName = "posts"
