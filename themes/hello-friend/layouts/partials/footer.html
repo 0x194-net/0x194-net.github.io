@@ -3,6 +3,7 @@
     {{ if $.Site.Copyright }}
       <div class="copyright copyright--user">{{ $.Site.Copyright | safeHTML }}</div>
       {{ else }}
+      
       {{ partial "logo.html" . }}
       <div class="copyright">
         <span
