@@ -3,7 +3,7 @@ languageCode = "en-us"
 theme = "hello-friend"
 paginate = 5
 
-# publishDir = "mascencerro.github.io"
+# publishDir = "0x194-net.github.io"
 
 [params]
   # Google Analytics
