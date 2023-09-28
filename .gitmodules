@@ -1,6 +1,6 @@
 [submodule "themes/hello-friend"]
 	path = themes/hello-friend
 	url = https://github.com/panr/hugo-theme-hello-friend.git
-[submodule "mascencerro.github.io"]
-	path = mascencerro.github.io
-	url = https://github.com/mascencerro/mascencerro.github.io
+[submodule "0x194-net.github.io"]
+	path = 0x194-net.github.io
+	url = https://github.com/0x194-net/0x194-net.github.io
