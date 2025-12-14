@@ -1,7 +1,8 @@
 baseurl = "https://0x194.net"
 languageCode = "en-us"
 theme = "hello-friend"
-paginate = 5
+[pagination]
+  pagerSize = 5
 
 # publishDir = "0x194-net.github.io"
 
